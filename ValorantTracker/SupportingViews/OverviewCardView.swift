@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct OverviewCardView: View {
+    var id: Int
+    
+    var mode: String
     var kdRatio: String
     var winPercent: String
     var killsPerRound: String
@@ -16,6 +19,7 @@ struct OverviewCardView: View {
     var rankImage: String
     
     var body: some View {
+        //NavigationLink(destination: Text("something")) {
         VStack {
 //            Image("turtlerock")
 //                .resizable()
@@ -26,16 +30,19 @@ struct OverviewCardView: View {
 //                        .font(.headline)
 //                        .foregroundColor(.secondary)
                     HStack {
-                        Text("Stats")
+                        Text(mode)
                             .font(.title)
                             .fontWeight(.bold)
                             .foregroundColor(.primary)
                             .lineLimit(3)
+                            .padding(.bottom, 5)
                         Spacer()
-                        Image(rankImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40.0, height: 40.0)
+                        if (rankImage != "unrated") {
+                            Image(rankImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 40.0, height: 40.0)
+                        }
                     }
 //                    Text("Written by Simon Ng".uppercased())
 //                        .font(.caption)
@@ -82,11 +89,19 @@ struct OverviewCardView: View {
                 .stroke(Color(.sRGB, red: 150/255, green: 150/255, blue: 150/255, opacity: 0.1), lineWidth: 1)
                 
         )
+//        .onTapGesture(count: 1, perform: {
+//            print("clicked card")
+//            NavigationLink(destination: Text("something")) {
+//                Text("Match History >")
+//            }
+//            .navigationBarTitle("Summary")
+//        })
+    //}.buttonStyle(PlainButtonStyle())
     }
 }
 
 struct OverviewCardView_Previews: PreviewProvider {
     static var previews: some View {
-        OverviewCardView(kdRatio: "k/d...", winPercent: "win%...", killsPerRound: "k/r...", wins: "wins...", rankImage: "Gold 2")
+        OverviewCardView(id: 0, mode: "Unrated", kdRatio: "k/d...", winPercent: "win%...", killsPerRound: "k/r...", wins: "wins...", rankImage: "Gold 2")
     }
 }

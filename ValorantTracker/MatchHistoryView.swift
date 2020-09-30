@@ -14,10 +14,10 @@ struct MatchHistoryView: View {
         ScrollView {
             VStack {
                 ForEach(0 ..< matchInfo[0].count, id: \.self) { i in
-                    MatchCardView(mode: matchInfo[0][i] , mapName: matchInfo[1][i] , roundsWon: matchInfo[2][i] , roundsLost: matchInfo[3][i] , kdRatio: matchInfo[4][i] , score: matchInfo[5][i] , killsPerRound: matchInfo[6][i] , damage: matchInfo[7][i] )
+                    MatchCardView(id: i, mode: matchInfo[0][i] , mapName: matchInfo[1][i] , roundsWon: matchInfo[2][i] , roundsLost: matchInfo[3][i] , kdRatio: matchInfo[4][i] , score: matchInfo[5][i] , killsPerRound: matchInfo[6][i] , damage: matchInfo[7][i], result: matchInfo[8][i])
                 }
             }
-            .padding(.horizontal, 15)
+            .padding(.horizontal, 20)
         }
         .navigationBarTitle("Match History")
     }

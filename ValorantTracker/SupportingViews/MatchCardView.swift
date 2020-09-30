@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MatchCardView: View {
+    var id: Int
     var mode: String
     var mapName: String
     var roundsWon: String
@@ -16,6 +17,7 @@ struct MatchCardView: View {
     var score: String
     var killsPerRound: String
     var damage: String
+    var result: String
     
     
     var body: some View {
@@ -25,15 +27,35 @@ struct MatchCardView: View {
 //                .aspectRatio(contentMode: .fit)
             HStack {
                 VStack(alignment: .leading) {
-                    Text(mode)
+                    Text("\(mode) - \(mapName)")
                         .font(.headline)
                         .foregroundColor(.secondary)
                     HStack {
-                        Text(mapName)
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundColor(.primary)
-                            .lineLimit(3)
+                        if (result == "Victory") {
+                            Text(result)
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.green)
+                                .lineLimit(3)
+                        } else if (result == "Defeat") {
+                            Text(result)
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.red)
+                                .lineLimit(3)
+                        } else {
+                            Text(result)
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
+                                .lineLimit(3)
+                        }
+//                        Text(mapName)
+//                            .font(.title)
+//                            .fontWeight(.bold)
+//                            .foregroundColor(.primary)
+//                            .lineLimit(3)
+//                        Text(result)
                         Spacer()
                         Text(roundsWon)
                             .font(.title)
@@ -97,6 +119,6 @@ struct MatchCardView: View {
 
 struct MatchCardView_Previews: PreviewProvider {
     static var previews: some View {
-        MatchCardView(mode: "Normal", mapName: "Bind", roundsWon: "11", roundsLost: "14", kdRatio: "1.0", score: "1000", killsPerRound: "10", damage: "2500")
+        MatchCardView(id: 0, mode: "Normal", mapName: "Bind", roundsWon: "11", roundsLost: "14", kdRatio: "1.0", score: "1000", killsPerRound: "10", damage: "2500", result: "Draw")
     }
 }

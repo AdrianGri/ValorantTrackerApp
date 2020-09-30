@@ -126,6 +126,8 @@ struct statInfo: Decodable {
 struct statMetadata: Decodable {
 }
 
+var rankIconInfo: String = "unrated"
+
 struct Loading: View {
     
     @State var textToUpdate = "Update me!"
@@ -133,11 +135,26 @@ struct Loading: View {
     @State var winPercent = "0"
     @State var killsPerRound = "0"
     @State var wins = "0"
-    @State var rankName = "Gold 2"
+    @State var rankName = "unrated"
+    
+    @State var playTime = "0"
+    @State var matches = "0"
+    @State var kills = "0"
+    @State var deaths = "0"
+    @State var mostKills = "0"
+    @State var aces = "0"
+    @State var headshotPercent = "0"
+    @State var losses = "0"
     
     @State var matchInfo: [[String]] = [[],[],[],[],[],[],[],[]]
     
+    @State var competitiveStats: [String: String] = [:]
+    @State var unratedStats: [String: String] = [:]
+    @State var deathmatchStats: [String: String] = [:]
+    
     @State var finishedLoading: Bool = false
+    
+    
     
 //    let mainView = ContentView(textToUpdate: $textToUpdate, kdRatio: $kdRatio, winPercent: $winPercent, killsPerRound: $killsPerRound, wins: $wins, rankName: $rankName, matchInfo: $matchInfo)
     
@@ -146,7 +163,7 @@ struct Loading: View {
             VStack(alignment: .center) {
                 ProgressView()
                 NavigationLink(
-                    destination: ContentView(textToUpdate: $textToUpdate, kdRatio: $kdRatio, winPercent: $winPercent, killsPerRound: $killsPerRound, wins: $wins, rankName: $rankName, matchInfo: $matchInfo),
+                    destination: ContentView(competitiveStats: $competitiveStats, unratedStats: $unratedStats, deathmatchStats: $deathmatchStats, matchInfo: $matchInfo),
                     isActive: $finishedLoading,
                     label: {
                         EmptyView()
@@ -203,12 +220,16 @@ struct Loading: View {
                 
                 let numMatches: Int = mainData.data.matches.count
                 
-                var tempMatchInfo: [[String]] = [[],[],[],[],[],[],[],[]]
+                var tempMatchInfo: [[String]] = [[],[],[],[],[],[],[],[],[]]
                 
                 for i in 0...numMatches-1 {
                     if (mainData.data.matches[i].segments.count > 0) {
 //                        print(mainData.data.matches[i].segments[0].stats?.kdRatio?.displayValue)
-                        tempMatchInfo[0].append(mainData.data.matches[i].metadata.modeName!)
+                        var modeName = mainData.data.matches[i].metadata.modeName!
+                        if (modeName == "Normal") {
+                            modeName = "Unrated"
+                        }
+                        tempMatchInfo[0].append(modeName)
                         tempMatchInfo[1].append(mainData.data.matches[i].metadata.mapName!)
                         tempMatchInfo[2].append(mainData.data.matches[i].segments[0].stats.roundsWon.displayValue!)
                         tempMatchInfo[3].append(mainData.data.matches[i].segments[0].stats.roundsLost.displayValue!)
@@ -216,6 +237,15 @@ struct Loading: View {
                         tempMatchInfo[5].append(mainData.data.matches[i].segments[0].stats.score.displayValue!)
                         tempMatchInfo[6].append(mainData.data.matches[i].segments[0].stats.damagePerRound.displayValue!)
                         tempMatchInfo[7].append(mainData.data.matches[i].segments[0].stats.damage.displayValue!)
+                        let roundsWon = mainData.data.matches[i].segments[0].stats.roundsWon.displayValue!
+                        let roundsLost = mainData.data.matches[i].segments[0].stats.roundsLost.displayValue!
+                        if (Int(roundsWon) ?? 13 > Int(roundsLost) ?? 13) {
+                            tempMatchInfo[8].append("Victory")
+                        } else if (Int(roundsWon) ?? 13 < Int(roundsLost) ?? 13) {
+                            tempMatchInfo[8].append("Defeat")
+                        } else {
+                            tempMatchInfo[8].append("Draw")
+                        }
                     }
                 }
                 print(tempMatchInfo)
@@ -326,41 +356,79 @@ struct Loading: View {
             
             //print(json)
             
+            competitiveStats = getStats(mode: "competitive")
+            unratedStats = getStats(mode: "unrated")
+            deathmatchStats = getStats(mode: "deathmatch")
             
-           let html = try String(contentsOf: URL(string: "https://tracker.gg/valorant/profile/riot/leafs%23000/overview?playlist=competitive")!)
-//            var html = "empty html"
-//
-//            self.getHTML(aURL: "https://tracker.gg/valorant/profile/riot/leafs%23000/overview?playlist=competitive")
-//                    { result in
-//                        if result.isEmpty
-//                        {
-//                            print("Announcements could not be downloaded!")
-//                        }
-//                        else
-//                        {
-//                            print("Successful download of announcements.")
-//                            html = result
-//                            //print(html)
-//                        }
-//                        // Default
-//                    }
-//
-            
-           let doc: Document = try SwiftSoup.parse(html)
+            print(competitiveStats)
+            print(unratedStats)
+            print(deathmatchStats)
+            //self.finishedLoading = true
+            gotoLoginScreen()
+        } catch Exception.Error(let type, let message) {
+            print(message)
+        } catch {
+            print("error")
+        }
+    }
+    
+    
+}
 
-            //print(html)
+private func getRank(doc: Document) {
+    do {
+        guard let rankIcon: Element = try doc.select("div.valorant-rank-bg").first() else {
+            print("could not find rank-icon element, the player is most likely unrated")
+            rankIconInfo = "unrated"
+            return
+        }
 
-            guard let rankIcon: Element = try doc.select("div.valorant-rank-bg").first() else {
-                print("could not find rank-icon element, the player is most likely unrated")
-                return
-            }
+        guard let rankIconInfoTemp: String = try rankIcon.text() else {
+            print("could not get rankicon info into text")
+            return
+        }
+        
+        rankIconInfo = rankIconInfoTemp
+        
+        print(rankIconInfo)
+    } catch Exception.Error(let type, let message) {
+        print("caught error. type: \"\(type)\" and message \"\(message)\"")
+    } catch {
+        print("error")
+    }
+}
 
-            guard let rankIconInfo: String = try rankIcon.text() else {
-                print("could not get rankicon info into text")
-                return
-            }
+private func getStats(mode: String) -> [String: String] {
+    var kdRatio: String = ""
+    var winPercent: String = ""
+    var killsPerRound: String = ""
+    var wins: String = ""
+    var rankName: String = ""
+    var textToUpdate: String = ""
+    
+    var playTime: String = ""
+    var matches: String = ""
+    var kills: String = ""
+    var deaths: String = ""
+    var mostKills: String = ""
+    var aces: String = ""
+    var headshotPercent: String = ""
+    var losses: String = ""
+    
+    var allStats: [String: String] = [:]
+    
+    do {
+        let html = try String(contentsOf: URL(string: "https://tracker.gg/valorant/profile/riot/leafs%23000/overview?playlist=\(mode)")!)
+         
+        let doc: Document = try SwiftSoup.parse(html)
 
-            //gets the value of the span right after the span with the title "K/D Ratio"
+         //print(html)
+         
+         getRank(doc: doc)
+
+        
+
+         //gets the value of the span right after the span with the title "K/D Ratio"
 //            guard let kdRatio: Element = try doc.select("span[title$=K/D Ratio] + span").first() else {
 //                print("slfjsf")
 //                return
@@ -373,34 +441,74 @@ struct Loading: View {
 //            }
 
 //
-            //self.kdToUpdate = kdRatioInfo
+         //self.kdToUpdate = kdRatioInfo
+        allStats["mode"] = mode.capitalized
 
-            self.kdRatio = getStatValue(doc: doc, stat: "K/D Ratio")
-            self.winPercent = getStatValue(doc: doc, stat: "Win %")
-            self.killsPerRound = getStatValue(doc: doc, stat: "Kills/Round")
-            self.wins = getStatValue(doc: doc, stat: "Wins")
-            self.rankName = rankIconInfo
+         kdRatio = getStatValue(doc: doc, stat: "K/D Ratio")
+        allStats["kdRatio"] = kdRatio
+         winPercent = getStatValue(doc: doc, stat: "Win %")
+        allStats["winPercent"] = winPercent
+         killsPerRound = getStatValue(doc: doc, stat: "Kills/Round")
+        allStats["killsPerRound"] = killsPerRound
+         wins = getStatValue(doc: doc, stat: "Wins")
+        allStats["wins"] = wins
+         rankName = rankIconInfo
+        allStats["rankName"] = rankName
+        
+        playTime = getSpanValue(doc: doc, stat: "playtime")
+        let playTimeSplit = playTime.components(separatedBy: " Play")
+        playTime = playTimeSplit[0]
+        print(playTime)
+        allStats["playTime"] = playTime
+        matches = getSpanValue(doc: doc, stat: "matches")
+        let matchesSplit = matches.components(separatedBy: " Match")
+        matches = matchesSplit[0]
+        print(matches)
+        allStats["matches"] = matches
+        kills = getStatValue(doc: doc, stat: "Kills")
+        print(kills)
+        allStats["kills"] = kills
+        deaths = getStatValue(doc: doc, stat: "Deaths")
+        print(deaths)
+        allStats["deaths"] = deaths
+        mostKills = getStatValue(doc: doc, stat: "Most Kills (Match)")
+        print(mostKills)
+        allStats["mostKills"] = mostKills
+        aces = getStatValue(doc: doc, stat: "Aces")
+        print(aces)
+        allStats["aces"] = aces
+        headshotPercent = getStatValue(doc: doc, stat: "Headshots %")
+        headshotPercent = headshotPercent + "%"
+        print(headshotPercent)
+        allStats["headshotPercent"] = headshotPercent
+        let matchesInt: Int = Int(matches) ?? 0
+        let winsInt: Int = Int(wins) ?? 0
+        losses = String(matchesInt - winsInt)
+        print(losses)
+        allStats["losses"] = losses
 
-            //print(kdRatioInfo)
+         //print(kdRatioInfo)
 
-            print(rankIconInfo)
-            //let stuff: String = try masthead.text()
-            self.textToUpdate = rankIconInfo
-            
-            //self.finishedLoading = true
-            gotoLoginScreen()
-        } catch Exception.Error(let type, let message) {
-            print(message)
-        } catch {
-            print("error")
-        }
+         print(rankIconInfo)
+        
+        print(allStats)
+        
+         //let stuff: String = try masthead.text()
+         textToUpdate = rankIconInfo
+    } catch Exception.Error(let type, let message) {
+        print("caught error. type: \"\(type)\" and message \"\(message)\"")
+    } catch {
+        print("error")
     }
     
-    private func getStatValue(doc: Document, stat: String) -> String {
-        
-        var result: String = ""
-        
-        do {
+    return allStats
+}
+
+private func getStatValue(doc: Document, stat: String) -> String {
+    
+    var result: String = ""
+    
+    do {
         guard let statElement: Element = try doc.select("span[title$=\(stat)] + span").first() else {
             print("could not get stat element for stat: \(stat)")
             return("could not get stat element for stat \(stat)")
@@ -412,15 +520,40 @@ struct Loading: View {
         }
             
         result = statInfo
-            
-        } catch Exception.Error(let type, let message) {
-            print("caught error. type: \"\(type)\" and message \"\(message)\"")
-        } catch {
-            print("error")
+        
+    } catch Exception.Error(let type, let message) {
+        print("caught error. type: \"\(type)\" and message \"\(message)\"")
+    } catch {
+        print("error")
+    }
+    
+    return(result)
+}
+
+private func getSpanValue(doc: Document, stat: String) -> String {
+    
+    var result: String = ""
+    
+    do {
+        guard let statElement: Element = try doc.select("span[class$=\(stat)]").first() else {
+            print("could not get stat element for stat: \(stat)")
+            return("could not get stat element for stat \(stat)")
         }
         
-        return(result)
+        guard let statInfo: String = try statElement.text() else {
+            print("could not get stat info for stat: \(stat)")
+            return("could not get stat info for stat: \(stat)")
+        }
+            
+        result = statInfo
+        
+    } catch Exception.Error(let type, let message) {
+        print("caught error. type: \"\(type)\" and message \"\(message)\"")
+    } catch {
+        print("error")
     }
+    
+    return(result)
 }
 
 struct Loading_Previews: PreviewProvider {
