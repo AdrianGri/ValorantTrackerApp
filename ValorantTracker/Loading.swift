@@ -146,7 +146,7 @@ struct Loading: View {
     @State var headshotPercent = "0"
     @State var losses = "0"
     
-    @State var matchInfo: [[String]] = [[],[],[],[],[],[],[],[]]
+    @State var matchInfo: [String: [String]] = ["modeName":[], "mapName": [], "roundsWon": [], "roundsLost": [], "kdRatio": [], "score": [], "killsPerRound": [], "damage": [], "result": [], "kills": [], "deaths":[], "assists":[], "econRating":[], "agent":[], "headshots":[], "bodyshots":[], "legshots":[], "combatScore":[]]
     
     @State var competitiveStats: [String: String] = [:]
     @State var unratedStats: [String: String] = [:]
@@ -157,20 +157,30 @@ struct Loading: View {
     
     
 //    let mainView = ContentView(textToUpdate: $textToUpdate, kdRatio: $kdRatio, winPercent: $winPercent, killsPerRound: $killsPerRound, wins: $wins, rankName: $rankName, matchInfo: $matchInfo)
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
-        NavigationView {
-            VStack(alignment: .center) {
-                ProgressView()
-                NavigationLink(
-                    destination: ContentView(competitiveStats: $competitiveStats, unratedStats: $unratedStats, deathmatchStats: $deathmatchStats, matchInfo: $matchInfo),
-                    isActive: $finishedLoading,
-                    label: {
-                        EmptyView()
-                    })
+        ZStack {
+            if (colorScheme == .light) {
+                Color(.sRGB, red: 241/255, green: 242/255, blue: 246/255, opacity: 1)
+                    .ignoresSafeArea()
+            } else {
+                Color.black
+                    .ignoresSafeArea()
             }
-            .onAppear {
-                fetch()
+            NavigationView {
+                VStack(alignment: .center) {
+                    ProgressView()
+                    NavigationLink(
+                        destination: ContentView(competitiveStats: $competitiveStats, unratedStats: $unratedStats, deathmatchStats: $deathmatchStats, matchInfo: $matchInfo),
+                        isActive: $finishedLoading,
+                        label: {
+                            EmptyView()
+                        })
+                }
+                .onAppear {
+                    fetch()
+                }
             }
         }
     }
@@ -220,7 +230,7 @@ struct Loading: View {
                 
                 let numMatches: Int = mainData.data.matches.count
                 
-                var tempMatchInfo: [[String]] = [[],[],[],[],[],[],[],[],[]]
+                var tempMatchInfo: [String: [String]] = ["modeName":[], "mapName": [], "roundsWon": [], "roundsLost": [], "kdRatio": [], "score": [], "killsPerRound": [], "damage": [], "result": [], "kills": [], "deaths":[], "assists":[], "econRating":[], "agent":[], "headshots":[], "bodyshots":[], "legshots":[], "combatScore":[]]
                 
                 for i in 0...numMatches-1 {
                     if (mainData.data.matches[i].segments.count > 0) {
@@ -229,23 +239,48 @@ struct Loading: View {
                         if (modeName == "Normal") {
                             modeName = "Unrated"
                         }
-                        tempMatchInfo[0].append(modeName)
-                        tempMatchInfo[1].append(mainData.data.matches[i].metadata.mapName!)
-                        tempMatchInfo[2].append(mainData.data.matches[i].segments[0].stats.roundsWon.displayValue!)
-                        tempMatchInfo[3].append(mainData.data.matches[i].segments[0].stats.roundsLost.displayValue!)
-                        tempMatchInfo[4].append(mainData.data.matches[i].segments[0].stats.kdRatio.displayValue!)
-                        tempMatchInfo[5].append(mainData.data.matches[i].segments[0].stats.score.displayValue!)
-                        tempMatchInfo[6].append(mainData.data.matches[i].segments[0].stats.damagePerRound.displayValue!)
-                        tempMatchInfo[7].append(mainData.data.matches[i].segments[0].stats.damage.displayValue!)
-                        let roundsWon = mainData.data.matches[i].segments[0].stats.roundsWon.displayValue!
-                        let roundsLost = mainData.data.matches[i].segments[0].stats.roundsLost.displayValue!
-                        if (Int(roundsWon) ?? 13 > Int(roundsLost) ?? 13) {
-                            tempMatchInfo[8].append("Victory")
-                        } else if (Int(roundsWon) ?? 13 < Int(roundsLost) ?? 13) {
-                            tempMatchInfo[8].append("Defeat")
+                        //tempMatchInfo["modeName"] = []
+                        tempMatchInfo["modeName"]?.append(modeName)
+                        tempMatchInfo["mapName"]?.append(mainData.data.matches[i].metadata.mapName!)
+                        tempMatchInfo["roundsWon"]?.append(mainData.data.matches[i].segments[0].stats.roundsWon.displayValue!)
+                        tempMatchInfo["roundsLost"]?.append(mainData.data.matches[i].segments[0].stats.roundsLost.displayValue!)
+                        tempMatchInfo["kdRatio"]?.append(mainData.data.matches[i].segments[0].stats.kdRatio.displayValue!)
+                        tempMatchInfo["score"]?.append(mainData.data.matches[i].segments[0].stats.score.displayValue!)
+//                        tempMatchInfo["killsPerRound"]?.append(mainData.data.matches[i].segments[0].stats.damagePerRound.displayValue!)
+                        tempMatchInfo["damage"]?.append(mainData.data.matches[i].segments[0].stats.damage.displayValue!)
+//                        tempMatchInfo[0].append(modeName)
+//                        tempMatchInfo[1].append(mainData.data.matches[i].metadata.mapName!)
+//                        tempMatchInfo[2].append(mainData.data.matches[i].segments[0].stats.roundsWon.displayValue!)
+//                        tempMatchInfo[3].append(mainData.data.matches[i].segments[0].stats.roundsLost.displayValue!)
+//                        tempMatchInfo[4].append(mainData.data.matches[i].segments[0].stats.kdRatio.displayValue!)
+//                        tempMatchInfo[5].append(mainData.data.matches[i].segments[0].stats.score.displayValue!)
+//                        tempMatchInfo[6].append(mainData.data.matches[i].segments[0].stats.damagePerRound.displayValue!)
+//                        tempMatchInfo[7].append(mainData.data.matches[i].segments[0].stats.damage.displayValue!)
+                        let roundsWon: Double = Double(mainData.data.matches[i].segments[0].stats.roundsWon.displayValue!) ?? 13
+                        let roundsLost: Double = Double(mainData.data.matches[i].segments[0].stats.roundsLost.displayValue!) ?? 13
+                        let kills: Double = Double(mainData.data.matches[i].segments[0].stats.kills.displayValue!) ?? 26
+                        let killsPerRound: Double = ((Double(kills / (roundsWon + roundsLost))*10)).rounded()/10
+                        tempMatchInfo["killsPerRound"]?.append(String(killsPerRound))
+                        if (roundsWon > roundsLost) {
+                            tempMatchInfo["result"]?.append("Victory")
+                            //tempMatchInfo[8].append("Victory")
+                        } else if (roundsWon < roundsLost) {
+                            tempMatchInfo["result"]?.append("Defeat")
+                            //tempMatchInfo[8].append("Defeat")
                         } else {
-                            tempMatchInfo[8].append("Draw")
+                            tempMatchInfo["result"]?.append("Draw")
+                            //tempMatchInfo[8].append("Draw")
                         }
+                        
+                        tempMatchInfo["kills"]?.append(mainData.data.matches[i].segments[0].stats.kills.displayValue!)
+                        tempMatchInfo["deaths"]?.append(mainData.data.matches[i].segments[0].stats.deaths.displayValue!)
+                        tempMatchInfo["assists"]?.append(mainData.data.matches[i].segments[0].stats.assists.displayValue!)
+                        tempMatchInfo["econRating"]?.append(mainData.data.matches[i].segments[0].stats.econRating.displayValue!)
+                        tempMatchInfo["agent"]?.append(mainData.data.matches[i].metadata.agentName!)
+                        tempMatchInfo["headshots"]?.append(mainData.data.matches[i].segments[0].stats.dealtHeadshots.displayValue!)
+                        tempMatchInfo["bodyshots"]?.append(mainData.data.matches[i].segments[0].stats.dealtBodyshots.displayValue!)
+                        tempMatchInfo["legshots"]?.append(mainData.data.matches[i].segments[0].stats.dealtLegshots.displayValue!)
+                        tempMatchInfo["combatScore"]?.append(mainData.data.matches[i].segments[0].stats.scorePerRound.displayValue!)
                     }
                 }
                 print(tempMatchInfo)
@@ -356,6 +391,8 @@ struct Loading: View {
             
             //print(json)
             
+
+            
             competitiveStats = getStats(mode: "competitive")
             unratedStats = getStats(mode: "unrated")
             deathmatchStats = getStats(mode: "deathmatch")
@@ -426,7 +463,9 @@ private func getStats(mode: String) -> [String: String] {
          
          getRank(doc: doc)
 
-        
+        let newHtml = try String(contentsOf: URL(string: "https://tracker.gg/valorant/profile/riot/leafs%23000/agents")!)
+        let newDoc: Document = try SwiftSoup.parse(newHtml)
+        getMultipleStatValues(doc: newDoc, stat: "Win %")
 
          //gets the value of the span right after the span with the title "K/D Ratio"
 //            guard let kdRatio: Element = try doc.select("span[title$=K/D Ratio] + span").first() else {
@@ -560,4 +599,32 @@ struct Loading_Previews: PreviewProvider {
     static var previews: some View {
         Loading()
     }
+}
+
+private func getMultipleStatValues(doc: Document, stat: String) /*-> [String]*/ {
+    
+    print("------------------")
+    
+    var result: [String] = []
+    
+    do {
+        guard let statElements: Elements = try doc.select("span[title$=Time Played] + span") else {
+            print("could not get stat elements for stat: \(stat)")
+            //return(["could not get stat elements for stat: \(stat)"])
+        }
+        for link: Element in statElements.array() {
+            guard let statInfo: String = try link.text() else {
+                print("could not get stat info for stat: \(stat)")
+                //return(["could not get stat info for stat: \(stat)"])
+            }
+            print(statInfo)
+            //result.append(statInfo)
+        }
+    } catch Exception.Error(let type, let message) {
+        print("caught error. type: \"\(type)\" and message \"\(message)\"")
+    } catch {
+        print("error")
+    }
+    
+    //return(result)
 }

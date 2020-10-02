@@ -18,77 +18,88 @@ struct OverviewCardView: View {
     
     var rankImage: String
     
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
-        //NavigationLink(destination: Text("something")) {
-        VStack {
-//            Image("turtlerock")
-//                .resizable()
-//                .aspectRatio(contentMode: .fit)
-            HStack {
-                VStack(alignment: .leading) {
-//                    Text("SwiftUI")
-//                        .font(.headline)
-//                        .foregroundColor(.secondary)
-                    HStack {
-                        Text(mode)
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundColor(.primary)
-                            .lineLimit(3)
-                            .padding(.bottom, 5)
-                        Spacer()
-                        if (rankImage != "unrated") {
-                            Image(rankImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 40.0, height: 40.0)
-                        }
-                    }
-//                    Text("Written by Simon Ng".uppercased())
-//                        .font(.caption)
-//                        .foregroundColor(.secondary)
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("K/D Ratio")
-                                .font(.body)
-                                .fontWeight(.semibold)
-                            Text(kdRatio)
-                                .font(.body)
-                        }
-                        VStack(alignment: .leading) {
-                            Text("Win %")
-                                .font(.body)
-                                .fontWeight(.semibold)
-                            Text(winPercent)
-                                .font(.body)
-                        }
-                        VStack(alignment: .leading) {
-                            Text("Kills/Round")
-                                .font(.body)
-                                .fontWeight(.semibold)
-                            Text(killsPerRound)
-                                .font(.body)
-                        }
-                        VStack(alignment: .leading) {
-                            Text("Wins")
-                                .font(.body)
-                                .fontWeight(.semibold)
-                            Text(wins)
-                                .font(.body)
-                        }
-                    }
-                }
-                .layoutPriority(100)
-                Spacer()
+        ZStack {
+            if (colorScheme == .dark) {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                .fill(Color(.sRGB, red: 27/255, green: 28/255, blue: 30/255, opacity: 1))
+            } else {
+                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    .fill(Color.white)
             }
-            .padding()
+        //NavigationLink(destination: Text("something")) {
+            VStack {
+    //            Image("turtlerock")
+    //                .resizable()
+    //                .aspectRatio(contentMode: .fit)
+                HStack {
+                    VStack(alignment: .leading) {
+    //                    Text("SwiftUI")
+    //                        .font(.headline)
+    //                        .foregroundColor(.secondary)
+                        HStack {
+                            Text(mode)
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
+                                .lineLimit(3)
+                                .padding(.bottom, 5)
+                            Spacer()
+                            if (rankImage != "unrated") {
+                                Image(rankImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 40.0, height: 40.0)
+                            }
+                        }
+    //                    Text("Written by Simon Ng".uppercased())
+    //                        .font(.caption)
+    //                        .foregroundColor(.secondary)
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text("K/D Ratio")
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                                Text(kdRatio)
+                                    .font(.body)
+                            }
+                            VStack(alignment: .leading) {
+                                Text("Win %")
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                                Text(winPercent)
+                                    .font(.body)
+                            }
+                            VStack(alignment: .leading) {
+                                Text("Kills/Round")
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                                Text(killsPerRound)
+                                    .font(.body)
+                            }
+                            VStack(alignment: .leading) {
+                                Text("Wins")
+                                    .font(.body)
+                                    .fontWeight(.semibold)
+                                Text(wins)
+                                    .font(.body)
+                            }
+                        }
+                    }
+                    .layoutPriority(100)
+                    Spacer()
+                }
+                .padding()
+            }
+            .cornerRadius(10)
+//        .overlay(
+//            RoundedRectangle(cornerRadius: 10)
+//                .stroke(Color(.sRGB, red: 150/255, green: 150/255, blue: 150/255, opacity: 0.1), lineWidth: 1)
+//
+//        )
         }
-        .cornerRadius(10)
-        .overlay(
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(Color(.sRGB, red: 150/255, green: 150/255, blue: 150/255, opacity: 0.1), lineWidth: 1)
-                
-        )
 //        .onTapGesture(count: 1, perform: {
 //            print("clicked card")
 //            NavigationLink(destination: Text("something")) {

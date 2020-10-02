@@ -17,72 +17,85 @@ struct StatsView: View {
     
     var screenWidth = UIScreen.main.bounds.width
     
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
-        VStack {
-            Picker(selection: $selectedTab, label: Text("Chosen mode")) {
-                            Text("Competitive").tag(0)
-                            Text("Unrated").tag(1)
-                            Text("Deathmatch").tag(2)
-                        }.pickerStyle(SegmentedPickerStyle())
-            if (selectedTab == 0) {
-                CompetitiveStatsView(competitiveStats: $competitiveStats)
-            } else if (selectedTab == 1) {
-                UnratedStatsView(unratedStats: $unratedStats)
+        ZStack {
+            if (colorScheme == .dark) {
+                Color.black
+                    .ignoresSafeArea()
             } else {
-                DeathmatchStatsView(deathmatchStats: $deathmatchStats)
+                Color(.sRGB, red: 241/255, green: 242/255, blue: 246/255, opacity: 1)
+                    .ignoresSafeArea()
             }
-//            HStack {
-//                VStack (alignment: .leading) {
-//                    Text("Time Played")
-//                        .font(.title3)
-//                        .fontWeight(.semibold)
-//                    Text("7d")
-//                        .font(.body)
-//                }
-//                VStack (alignment: .leading) {
-//                    Text("Matches")
-//                        .font(.title3)
-//                        .fontWeight(.semibold)
-//                    Text("100")
-//                        .font(.body)
-//                }
-//                VStack (alignment: .leading) {
-//                    Text("Aces")
-//                        .font(.title3)
-//                        .fontWeight(.semibold)
-//                    Text("3")
-//                        .font(.body)
-//                }
-//                Spacer()
-//            }.padding(.bottom, 10)
-//            HStack {
-//                VStack (alignment: .leading) {
-//                    Text("K/D Ratio")
-//                        .font(.title3)
-//                        .fontWeight(.semibold)
-//                    Text("100")
-//                        .font(.body)
-//                }
-//                VStack (alignment: .leading) {
-//                    Text("Kills")
-//                        .font(.title3)
-//                        .fontWeight(.semibold)
-//                    Text("100")
-//                        .font(.body)
-//                }
-//                VStack (alignment: .leading) {
-//                    Text("Deaths")
-//                        .font(.title3)
-//                        .fontWeight(.semibold)
-//                    Text("100")
-//                        .font(.body)
-//                }
-//                Spacer()
-//            }
-            Spacer()
+            VStack {
+                Picker(selection: $selectedTab, label: Text("Chosen mode")) {
+                                Text("Competitive").tag(0)
+                                Text("Unrated").tag(1)
+                                Text("Deathmatch").tag(2)
+                            }.pickerStyle(SegmentedPickerStyle())
+                if (selectedTab == 0) {
+                    CompetitiveStatsView(competitiveStats: $competitiveStats)
+                } else if (selectedTab == 1) {
+                    CompetitiveStatsView(competitiveStats: $unratedStats)
+                    //UnratedStatsView(unratedStats: $unratedStats)
+                } else {
+                    CompetitiveStatsView(competitiveStats: $deathmatchStats)
+                    //DeathmatchStatsView(deathmatchStats: $deathmatchStats)
+                }
+    //            HStack {
+    //                VStack (alignment: .leading) {
+    //                    Text("Time Played")
+    //                        .font(.title3)
+    //                        .fontWeight(.semibold)
+    //                    Text("7d")
+    //                        .font(.body)
+    //                }
+    //                VStack (alignment: .leading) {
+    //                    Text("Matches")
+    //                        .font(.title3)
+    //                        .fontWeight(.semibold)
+    //                    Text("100")
+    //                        .font(.body)
+    //                }
+    //                VStack (alignment: .leading) {
+    //                    Text("Aces")
+    //                        .font(.title3)
+    //                        .fontWeight(.semibold)
+    //                    Text("3")
+    //                        .font(.body)
+    //                }
+    //                Spacer()
+    //            }.padding(.bottom, 10)
+    //            HStack {
+    //                VStack (alignment: .leading) {
+    //                    Text("K/D Ratio")
+    //                        .font(.title3)
+    //                        .fontWeight(.semibold)
+    //                    Text("100")
+    //                        .font(.body)
+    //                }
+    //                VStack (alignment: .leading) {
+    //                    Text("Kills")
+    //                        .font(.title3)
+    //                        .fontWeight(.semibold)
+    //                    Text("100")
+    //                        .font(.body)
+    //                }
+    //                VStack (alignment: .leading) {
+    //                    Text("Deaths")
+    //                        .font(.title3)
+    //                        .fontWeight(.semibold)
+    //                    Text("100")
+    //                        .font(.body)
+    //                }
+    //                Spacer()
+    //            }
+                Spacer()
+            }
+            .padding(.horizontal, 20)
+            .navigationBarTitle("Stats")
         }
-        .padding(.horizontal, 20)
-        .navigationBarTitle("Stats")
     }
 }
 

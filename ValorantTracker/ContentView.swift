@@ -25,12 +25,22 @@ struct ContentView: View {
 //    @Binding var wins: String
 //    @Binding var rankName: String
     
-    @Binding var matchInfo: [[String]]
+    @Binding var matchInfo: [String: [String]]
     
     //@State var i = 0
     var UIState: UIStateModel = UIStateModel()
     
+    @Environment(\.colorScheme) var colorScheme
+    
     var body: some View {
+        ZStack {
+            if (colorScheme == .light) {
+                Color(.sRGB, red: 241/255, green: 242/255, blue: 246/255, opacity: 1)
+                    .ignoresSafeArea()
+            } else {
+                Color.black
+                    .ignoresSafeArea()
+            }
         //NavigationView {
             ScrollView {
                 HStack {
@@ -60,8 +70,10 @@ struct ContentView: View {
                             .navigationBarTitle("Summary")
                         }
                         VStack {
-                            if (matchInfo[0].count > 0) {
-                                MatchCardView(id: 0, mode: matchInfo[0][0], mapName: matchInfo[1][0], roundsWon: matchInfo[2][0], roundsLost: matchInfo[3][0], kdRatio: matchInfo[4][0], score: matchInfo[5][0], killsPerRound: matchInfo[6][0], damage: matchInfo[7][0], result: matchInfo[8][0])
+                            if (matchInfo["result"]!.count > 0) {
+//                                MatchCardView(id: 0, mode: matchInfo[0][0], mapName: matchInfo[1][0], roundsWon: matchInfo[2][0], roundsLost: matchInfo[3][0], kdRatio: matchInfo[4][0], score: matchInfo[5][0], killsPerRound: matchInfo[6][0], damage: matchInfo[7][0], result: matchInfo[8][0])
+//                            }
+                                MatchCardView(id: 0, mode: matchInfo["modeName"]![0], mapName: matchInfo["mapName"]![0], roundsWon: matchInfo["roundsWon"]![0], roundsLost: matchInfo["roundsLost"]![0], kdRatio: matchInfo["kdRatio"]![0], score: matchInfo["score"]![0], killsPerRound: matchInfo["killsPerRound"]![0], damage: matchInfo["damage"]![0], result: matchInfo["result"]![0], kills: matchInfo["kills"]![0], deaths: matchInfo["deaths"]![0], assists: matchInfo["assists"]![0], econRating: matchInfo["econRating"]![0], agent: matchInfo["agent"]![0], headshots: matchInfo["headshots"]![0], bodyshots: matchInfo["bodyshots"]![0], legshots: matchInfo["legshots"]![0], combatScore: matchInfo["combatScore"]![0])
                             }
 //                            ForEach(0 ..< matchInfo[0].count, id: \.self) { i in
 //                                MatchCardView(mode: matchInfo[0][i] , mapName: matchInfo[1][i] , roundsWon: matchInfo[2][i] , roundsLost: matchInfo[3][i] , kdRatio: matchInfo[4][i] , score: matchInfo[5][i] , killsPerRound: matchInfo[6][i] , damage: matchInfo[7][i] )
@@ -77,6 +89,7 @@ struct ContentView: View {
         .navigationBarTitle("Summary")
         //.navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
+        }
     }
     
     

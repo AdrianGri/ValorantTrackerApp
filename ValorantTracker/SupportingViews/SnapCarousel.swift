@@ -154,7 +154,7 @@ struct Canvas<Content : View> : View {
     var body: some View {
         content
             .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
-            .background(Color.white.edgesIgnoringSafeArea(.all))
+            //.background(Color.white.edgesIgnoringSafeArea(.all))
     }
 }
 
