@@ -9,13 +9,15 @@ import SwiftUI
 
 struct StatsView: View {
     
-    @Binding var competitiveStats: [String: String]
-    @Binding var unratedStats: [String: String]
-    @Binding var deathmatchStats: [String: String]
+//    @Binding var competitiveStats: [String: String]
+//    @Binding var unratedStats: [String: String]
+//    @Binding var deathmatchStats: [String: String]
     
     @State private var selectedTab: Int = 0
     
     var screenWidth = UIScreen.main.bounds.width
+    
+    @EnvironmentObject var allData: AllData
     
     @Environment(\.colorScheme) var colorScheme
     
@@ -35,12 +37,12 @@ struct StatsView: View {
                                 Text("Deathmatch").tag(2)
                             }.pickerStyle(SegmentedPickerStyle())
                 if (selectedTab == 0) {
-                    CompetitiveStatsView(competitiveStats: $competitiveStats)
+                    CompetitiveStatsView(competitiveStats: self.allData.competitiveStats)
                 } else if (selectedTab == 1) {
-                    CompetitiveStatsView(competitiveStats: $unratedStats)
+                    CompetitiveStatsView(competitiveStats: self.allData.unratedStats)
                     //UnratedStatsView(unratedStats: $unratedStats)
                 } else {
-                    CompetitiveStatsView(competitiveStats: $deathmatchStats)
+                    CompetitiveStatsView(competitiveStats: self.allData.deathmatchStats)
                     //DeathmatchStatsView(deathmatchStats: $deathmatchStats)
                 }
     //            HStack {

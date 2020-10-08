@@ -183,6 +183,10 @@ struct MatchView: View {
                                                 .font(.body)
                                         }
                                         Spacer()
+                                        Image("\(agent.lowercased())_icon")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 40.0, height: 40.0)
                                     }.padding(.all, 10)
                                 }.padding(.bottom, 5)
                                 Spacer()

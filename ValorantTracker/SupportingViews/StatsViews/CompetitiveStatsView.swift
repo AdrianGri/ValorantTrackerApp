@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CompetitiveStatsView: View {
-    @Binding var competitiveStats: [String: String]
+    var competitiveStats: [String: String]
     
     var screenWidth = UIScreen.main.bounds.width
     
