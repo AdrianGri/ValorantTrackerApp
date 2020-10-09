@@ -12,6 +12,27 @@ import SwiftSoup
 class GetData {
     private var riotName: String = UserDefaults.standard.string(forKey: "Name") ?? "000"
     private var riotId: String = UserDefaults.standard.string(forKey: "ID") ?? "000"
+
+    func isProfilePrivate() -> Bool {
+        var result: Bool = true
+        do {
+            let html = try String(contentsOf: URL(string: "https://tracker.gg/valorant/profile/riot/\(riotName)%23\(riotId)/overview")!)
+            let doc: Document = try SwiftSoup.parse(html)
+            
+            guard let errorElement: Element = try doc.select("p[class$=error-message]").first() else {
+                print("profile is not private")
+                result = false
+                return(false)
+            }
+            
+            print("profile is private")
+        } catch Exception.Error(let type, let message) {
+            print(message)
+        } catch {
+            print("error")
+        }
+        return(result)
+    }
     
     func fetchData(allData: AllData) {
         riotName = UserDefaults.standard.string(forKey: "Name") ?? "000"
@@ -27,7 +48,10 @@ class GetData {
             
 //            let dataAsString = String(data: data, encoding: .utf8)
 //            print(dataAsString)
-            
+            DispatchQueue.main.async {
+                allData.progressMessage = "Getting match history..."
+                allData.progress += 0.25
+            }
             do {
 //                let websiteDescription = try JSONDecoder().decode(WebsiteDescription.self, from: data)
 //                print(websiteDescription.name, websiteDescription.description)
@@ -91,7 +115,10 @@ class GetData {
                 }
                 print(tempMatchInfo)
                 
-                allData.matchInfo = tempMatchInfo
+                DispatchQueue.main.async {
+                    allData.matchInfo = tempMatchInfo
+                }
+                
                 
 //                DispatchQueue.main.async {
 //                    globals.matchInfo = tempMatchInfo
@@ -196,15 +223,43 @@ class GetData {
             
             
             //print(json)
+            DispatchQueue.main.async {
+                allData.progressMessage = "Getting agent stats..."
+                allData.progress += 0.25
+            }
+            var competitiveAgentInfo = getAgentInfo(mode: "competitive")
+            DispatchQueue.main.async {
+                allData.progress += 0.125 //0.625
+            }
+            var unratedAgentInfo = getAgentInfo(mode: "unrated")
             
-            allData.competitiveAgentInfo = getAgentInfo(mode: "competitive")
-            allData.unratedAgentInfo = getAgentInfo(mode: "unrated")
-//            competitiveAgentInfo = getAgentInfo(mode: "competitive")
-//            unratedAgentInfo = getAgentInfo(mode: "unrated")
+            DispatchQueue.main.async {
+                allData.progressMessage = "Getting overall stats..."
+                allData.progress += 0.15 //0.75
+            }
+            var competitiveStats = getStats(mode: "competitive")
+            DispatchQueue.main.async {
+                allData.progress += 0.125 //0.825
+            }
+            var unratedStats = getStats(mode: "unrated")
+            DispatchQueue.main.async {
+                allData.progress += 0.075 //0.9
+            }
+            var deathmatchStats = getStats(mode: "deathmatch")
+            DispatchQueue.main.async {
+                allData.progress += 0.05 //0.95
+            }
             
-            allData.competitiveStats = getStats(mode: "competitive")
-            allData.unratedStats = getStats(mode: "unrated")
-            allData.deathmatchStats = getStats(mode: "deathmatch")
+            DispatchQueue.main.async {
+                allData.competitiveAgentInfo = competitiveAgentInfo
+                allData.unratedAgentInfo = unratedAgentInfo
+    //            competitiveAgentInfo = getAgentInfo(mode: "competitive")
+    //            unratedAgentInfo = getAgentInfo(mode: "unrated")
+                
+                allData.competitiveStats = competitiveStats
+                allData.unratedStats = unratedStats
+                allData.deathmatchStats = deathmatchStats
+            }
             
 //            competitiveStats = getStats(mode: "competitive")
 //            unratedStats = getStats(mode: "unrated")
@@ -213,6 +268,11 @@ class GetData {
             print(allData.competitiveStats)
             print(allData.unratedStats)
             print(allData.deathmatchStats)
+            
+            DispatchQueue.main.async {
+                allData.progressMessage = "Complete"
+                allData.progress = 1
+            }
             //self.finishedLoading = true
             //gotoLoginScreen()
         } catch Exception.Error(let type, let message) {
@@ -374,6 +434,7 @@ class GetData {
         
         return allStats
     }
+    
     func getStatValue(doc: Document, stat: String) -> String {
         
         var result: String = ""

@@ -111,14 +111,17 @@ struct ContentView: View {
                     }
                     .padding(.horizontal, 20)
                     Spacer()
-                    NavigationLink(destination: Settings(),
-                                                   isActive: self.$showingChildView)
-                                    { EmptyView() }
-                                        .frame(width: 0, height: 0)
-                                        .disabled(true)            }
-                                    .navigationBarItems(
-                                        trailing: Button(action:{ self.showingChildView = true }) { Text("Settings") })
+                    NavigationLink(
+                        destination: Settings(), isActive: self.$showingChildView) {
+                        EmptyView()
+                        
+                    }
+                    .frame(width: 0, height: 0)
+                    .disabled(true)
                 }
+                .navigationBarItems(
+                trailing: Button(action:{ self.showingChildView = true }) { Text("Settings") })
+            }
             //}
         }
 //            .navigationBarItems(trailing: NavigationLink(destination: Settings()) {
@@ -127,9 +130,11 @@ struct ContentView: View {
         .navigationBarTitle("Summary")
         //.navigationBarHidden(true)
         .navigationBarBackButtonHidden(true)
-        }
     }
-    
+}
+
+
+
     
     
 //    func getHTMLData(completionHandler: (_ result: String, _ error: String) -> Void){

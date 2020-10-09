@@ -14,4 +14,6 @@ class AllData: ObservableObject {
     @Published var matchInfo: [String: [String]] = ["modeName":[], "mapName": [], "roundsWon": [], "roundsLost": [], "kdRatio": [], "score": [], "killsPerRound": [], "damage": [], "result": [], "kills": [], "deaths":[], "assists":[], "econRating":[], "agent":[], "headshots":[], "bodyshots":[], "legshots":[], "combatScore":[]]
     @Published var competitiveAgentInfo: [String: [String]] = ["agentName":[], "agentRole":[], "timePlayed":[], "kdRatio":[], "winPercent":[]]
     @Published var unratedAgentInfo: [String: [String]] = ["agentName":[], "agentRole":[], "timePlayed":[], "kdRatio":[], "winPercent":[]]
+    @Published var progress: Double = 0
+    @Published var progressMessage: String = "Loading"
 }

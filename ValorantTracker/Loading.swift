@@ -160,6 +160,7 @@ struct Loading: View {
 //    @State var unratedAgentInfo: [String: [String]] = ["agentName":[], "agentRole":[], "timePlayed":[], "kdRatio":[], "winPercent":[]]
     
     @State var finishedLoading: Bool = false
+    @State var goToStartScreen: Bool = false
     
 //    let mainView = ContentView(textToUpdate: $textToUpdate, kdRatio: $kdRatio, winPercent: $winPercent, killsPerRound: $killsPerRound, wins: $wins, rankName: $rankName, matchInfo: $matchInfo)
     @Environment(\.colorScheme) var colorScheme
@@ -179,7 +180,7 @@ struct Loading: View {
                         .font(.title)
                         .fontWeight(.bold)
                         .onAppear {
-                            getAllData()
+                            checkFirstLaunch()
                         }
                     ProgressView()
                     NavigationLink(
@@ -188,8 +189,26 @@ struct Loading: View {
                         label: {
                             EmptyView()
                         })
+                    NavigationLink(
+                        destination: StartScreen(),
+                        isActive: $goToStartScreen,
+                        label: {
+                            EmptyView()
+                        })
                 }
             }.environmentObject(allData)
+        }
+    }
+    
+    func checkFirstLaunch() {
+        var isFirstLaunch: Bool = UserDefaults.standard.bool(forKey: "HasLaunchedOnce") ?? false
+        isFirstLaunch = false
+        if (!isFirstLaunch) {
+            UserDefaults.standard.set(true, forKey: "HasLaunchedOnce")
+            print("going to start screen")
+            goToStartScreen = true
+        } else {
+            getAllData()
         }
     }
     
