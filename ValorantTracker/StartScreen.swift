@@ -29,14 +29,14 @@ struct StartScreen: View {
     var body: some View {
         VStack(alignment: .center) {
             Spacer()
-            Text("(App Name)")
+            Text("ValTracker")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(.white)
             Image("Radiant")
             VStack (alignment: .leading) {
                 Text("RiotID")
-                    .font(.title2)
+                    .font(.title)
                     .fontWeight(.bold)
                     .padding(.horizontal, 20)
                     .foregroundColor(.white)
@@ -91,8 +91,7 @@ struct StartScreen: View {
         }
         .navigationBarHidden(true)
         .background(
-            LinearGradient(gradient: Gradient(colors: [Color(red: 250 / 255, green: 64 / 255, blue: 84 / 255)
-                                                       , Color(red: 54 / 255, green: 73 / 255, blue: 102 / 255)]), startPoint: .top, endPoint: .bottom)
+            LinearGradient(gradient: Gradient(colors: [Color(red: 250 / 255, green: 64 / 255, blue: 84 / 255), Color(red: 54 / 255, green: 73 / 255, blue: 102 / 255)]), startPoint: .top, endPoint: .bottom)
               .edgesIgnoringSafeArea(.all))
     }
     

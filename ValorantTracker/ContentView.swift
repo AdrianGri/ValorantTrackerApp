@@ -50,6 +50,33 @@ struct ContentView: View {
             }
         //NavigationView {
             ScrollView {
+                ZStack {
+                    if (colorScheme == .dark) {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        .fill(Color(.sRGB, red: 27/255, green: 28/255, blue: 30/255, opacity: 1))
+                            .frame(maxHeight: 80)
+                    } else {
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color.white)
+                            .frame(maxHeight: 80)
+                    }
+                    VStack {
+                        HStack {
+                            Image("\(allData.competitiveAgentInfo["agentName"]![0].lowercased())_icon")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 40.0, height: 40.0)
+                            Text("\(allData.accountName)#\(allData.accountID)")
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .padding(.horizontal, 10)
+                            Spacer()
+                        }
+                        .padding()
+                    }
+                    .cornerRadius(10)
+                }
+                .padding(.horizontal, 20)
                 HStack {
                     VStack(alignment: .leading) {
     //                    Text("Valorant Tracker").font(.title).fontWeight(.bold).foregroundColor(.black)

@@ -328,6 +328,7 @@ struct CompetitiveStatsView: View {
     //                }.frame(width: (screenWidth - 40) / 3.33)
                 Spacer()
             }.frame(maxWidth: .infinity)
+            .padding(.top, 5)
         }
         }
     }

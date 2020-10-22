@@ -176,12 +176,11 @@ struct Loading: View {
             }
             NavigationView {
                 VStack(alignment: .center) {
-                    Text("Valorant Tracker")
-                        .font(.title)
+                    Image("Radiant")
+                        .frame(width: 250, height: 250)
+                    Text("ValTracker")
+                        .font(.largeTitle)
                         .fontWeight(.bold)
-                        .onAppear {
-                            checkFirstLaunch()
-                        }
                     ProgressView()
                     NavigationLink(
                         destination: ContentView(),
@@ -197,6 +196,9 @@ struct Loading: View {
                         })
                 }
             }.environmentObject(allData)
+        }
+        .onAppear {
+            checkFirstLaunch()
         }
     }
     
@@ -219,11 +221,13 @@ struct Loading: View {
         }
     
     func getAllData() {
-        print("getAllData() run")
+        print("getAllData() run from loading screen")
         var getData = GetData()
         print("fetching data from GetData object")
         getData.fetchData(allData: allData)
         print("going to next screen")
+        allData.progressMessage = "Loading..."
+        allData.progress = 0
         print(self.allData.matchInfo)
         gotoLoginScreen()
     }

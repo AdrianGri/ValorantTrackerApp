@@ -47,7 +47,13 @@ struct OverviewCardView: View {
                                 .lineLimit(3)
                                 .padding(.bottom, 5)
                             Spacer()
-                            if (rankImage != "unrated") {
+                            if (rankImage == "Radiant") {
+                                Image(rankImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 40.0, height: 40.0)
+                                    .shadow(color: .black, radius: 7)
+                            } else if (rankImage != "unrated") {
                                 Image(rankImage)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)

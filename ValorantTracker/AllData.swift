@@ -16,4 +16,6 @@ class AllData: ObservableObject {
     @Published var unratedAgentInfo: [String: [String]] = ["agentName":[], "agentRole":[], "timePlayed":[], "kdRatio":[], "winPercent":[]]
     @Published var progress: Double = 0
     @Published var progressMessage: String = "Loading"
+    @Published var accountName: String = ""
+    @Published var accountID: String = ""
 }

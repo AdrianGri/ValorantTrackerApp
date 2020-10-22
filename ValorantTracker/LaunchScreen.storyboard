@@ -16,9 +16,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Valorant Tracker" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SZ4-2M-5t9">
-                                <rect key="frame" x="90" y="427.5" width="234" height="41"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Radiant" translatesAutoresizingMaskIntoConstraints="NO" id="Lb2-E0-7FH">
+                                <rect key="frame" x="79" y="320" width="256" height="256"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ValTracker" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SZ4-2M-5t9">
+                                <rect key="frame" x="102" y="598" width="210" height="50.5"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="42"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -26,8 +29,11 @@
                         <viewLayoutGuide key="safeArea" id="D6z-gu-HEj"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="Lb2-E0-7FH" firstAttribute="centerX" secondItem="1bu-Yb-YCN" secondAttribute="centerX" id="GdC-04-WNj"/>
                             <constraint firstItem="SZ4-2M-5t9" firstAttribute="centerX" secondItem="1bu-Yb-YCN" secondAttribute="centerX" id="VDi-GB-DVS"/>
-                            <constraint firstItem="SZ4-2M-5t9" firstAttribute="centerY" secondItem="1bu-Yb-YCN" secondAttribute="centerY" id="bL4-Gf-viY"/>
+                            <constraint firstItem="SZ4-2M-5t9" firstAttribute="centerX" secondItem="1bu-Yb-YCN" secondAttribute="centerX" id="Xqd-Jb-A98"/>
+                            <constraint firstItem="SZ4-2M-5t9" firstAttribute="centerY" secondItem="1bu-Yb-YCN" secondAttribute="centerY" constant="175" id="bL4-Gf-viY"/>
+                            <constraint firstItem="Lb2-E0-7FH" firstAttribute="centerY" secondItem="1bu-Yb-YCN" secondAttribute="centerY" id="yjE-bZ-I8P"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -38,6 +44,7 @@
     </scenes>
     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
     <resources>
+        <image name="Radiant" width="256" height="256"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

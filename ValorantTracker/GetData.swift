@@ -37,6 +37,8 @@ class GetData {
     func fetchData(allData: AllData) {
         riotName = UserDefaults.standard.string(forKey: "Name") ?? "000"
         riotId = UserDefaults.standard.string(forKey: "ID") ?? "000"
+        allData.accountName = riotName
+        allData.accountID = riotId
         let jsonUrlString = "https://api.tracker.gg/api/v2/valorant/rap-matches/riot/\(riotName)%23\(riotId)?type=competitive"
         guard let url = URL(string: jsonUrlString) else { return }
         
